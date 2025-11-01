@@ -67,7 +67,21 @@ public class AdminController {
 
     @PostMapping("/admin/prodotto/delete/{id}")
     public String deleteProdotto(@PathVariable("id") Long id) {
-        prodottoService.deleteById(id);
+        // Prima di eliminare il prodotto dal DB, recuperiamolo per ottenere l'URL dell'immagine
+        Prodotto prodotto = prodottoService.findById(id);
+        if (prodotto != null && prodotto.getImmagineUrl() != null && !prodotto.getImmagineUrl().isEmpty()) {
+            try {
+                // Estraiamo il nome del file dall'URL (es. da "/uploads/nome_file.jpg" a "nome_file.jpg")
+                String fileName = Paths.get(prodotto.getImmagineUrl()).getFileName().toString();
+                Path filePath = Paths.get(System.getProperty("user.dir"), "uploads", fileName);
+                Files.deleteIfExists(filePath);
+            } catch (IOException e) {
+                // Logghiamo l'errore ma non blocchiamo l'operazione di eliminazione dal DB
+                System.err.println("Errore durante l'eliminazione del file immagine: " + e.getMessage());
+            }
+        }
+
+        prodottoService.deleteById(id); // Eliminiamo il prodotto dal database
         return "redirect:/";
     }
 

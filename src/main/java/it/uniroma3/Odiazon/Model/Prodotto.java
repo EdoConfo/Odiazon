@@ -1,29 +1,33 @@
 package it.uniroma3.Odiazon.Model;
 
-import java.util.Objects;
 import java.math.BigDecimal;
+import java.util.Objects;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-@Entity // <-- QUESTA È LA RIGA PIÙ IMPORTANTE!
+@Entity
 public class Prodotto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nome;
+
     private String descrizione;
+
+    @Column(precision = 10, scale = 2)
     private BigDecimal prezzo;
+
     private String immagineUrl;
 
-    // Costruttore vuoto richiesto da JPA
     public Prodotto() {}
 
-    // Getter e Setter (richiesti)
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getNome() { return nome; }
@@ -35,7 +39,6 @@ public class Prodotto {
     public String getImmagineUrl() { return immagineUrl; }
     public void setImmagineUrl(String immagineUrl) { this.immagineUrl = immagineUrl; }
 
-    // Equals e HashCode (richiesti)
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

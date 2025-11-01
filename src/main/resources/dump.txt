@@ -1,0 +1,14 @@
+# Comando migliorato per generare un data.sql robusto
+# 1. Pulisce il file data.sql e scrive un header
+# 2. Esegue il dump dei soli INSERT e li aggiunge al file
+# 3. Aggiunge la riga dinamica per aggiornare la sequenza degli ID
+
+***** Windows *****
+Set-Content -Path "src\main\resources\data.sql" -Value "/* Dati iniziali aggiornati il $(Get-Date) */`n";
+pg_dump.exe --username postgres --dbname Odiazon --host localhost --port 5432 --table public.prodotto --data-only --column-inserts | Select-String -Pattern "^INSERT" | Add-Content -Path "src\main\resources\data.sql";
+Add-Content -Path "src\main\resources\data.sql" -Value "`n-- Aggiorna la sequenza degli ID in modo dinamico`nSELECT pg_catalog.setval('public.prodotto_id_seq', (SELECT MAX(id) FROM public.prodotto), true);";
+
+***** Linux / MacOS *****
+echo "/* Dati iniziali aggiornati il $(date) */" > src/main/resources/data.sql && \
+pg_dump --username postgres --dbname Odiazon --host localhost --port 5432 --table public.prodotto --data-only --column-inserts | grep '^INSERT' >> src/main/resources/data.sql && \
+echo -e "\n-- Aggiorna la sequenza degli ID in modo dinamico\nSELECT pg_catalog.setval('public.prodotto_id_seq', (SELECT MAX(id) FROM public.prodotto), true);" >> src/main/resources/data.sql
