@@ -1,3 +1,26 @@
+/*
+Comando per esportare i dati della tabella prodotto in formato SQL INSERT:
+
+***** LINUX / MACOS *****
+    { cat <<'EOF'
+    /*
+    Comando per esportare i dati della tabella prodotto in formato SQL INSERT:
+
+    ***** LINUX / MACOS *****
+    psql -d Odiazon -U postgres -t -A -o src/main/resources/import.sql -c "SELECT 'INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES (''' || replace(nome, '''', '''''') || ''', ''' || replace(descrizione, '''', '''''') || ''', ' || prezzo || ', ''/uploads/' || substring(immagine_url from '[^/]+$') || ''');' FROM prodotto;"
+
+    ***** WINDOWS *****
+    Set-Content -Path "src\main\resources\import.sql" -Value "/*`nComando per esportare i dati della tabella prodotto in formato SQL INSERT:`n`npsql -d Odiazon -U postgres -t -A -o src/main/resources/import.sql -c `"SELECT 'INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES (''' || replace(nome, '''', '''''') || ''', ''' || replace(descrizione, '''', '''''') || ''', ' || prezzo || ', ''/uploads/' || substring(immagine_url from '[^/]+$') || ''');' FROM prodotto;`"`n*/"; Add-Content -Path "src\main\resources\import.sql" -Value (psql -d Odiazon -U postgres -t -A -c "SELECT 'INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES (''' || replace(nome, '''', '''''') || ''', ''' || replace(descrizione, '''', '''''') || ''', ' || prezzo || ', ''/uploads/' || substring(immagine_url from '[^/]+$') || ''');' FROM prodotto;")
+
+    */
+    EOF
+    psql -d Odiazon -U postgres -t -A -c "SELECT 'INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES (''' || replace(nome, '''', '''''') || ''', ''' || replace(descrizione, '''', '''''') || ''', ' || prezzo || ', ''/uploads/' || substring(immagine_url from '[^/]+$') || ''');' FROM prodotto;"; } > src/main/resources/import.sql
+
+
+***** WINDOWS *****
+    Set-Content -Path "src\main\resources\import.sql" -Value "/*`nComando per esportare i dati della tabella prodotto in formato SQL INSERT:`n`npsql -d Odiazon -U postgres -t -A -o src/main/resources/import.sql -c `"SELECT 'INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES (''' || replace(nome, '''', '''''') || ''', ''' || replace(descrizione, '''', '''''') || ''', ' || prezzo || ', ''/uploads/' || substring(immagine_url from '[^/]+$') || ''');' FROM prodotto;`"`n*/"; Add-Content -Path "src\main\resources\import.sql" -Value (psql -d Odiazon -U postgres -t -A -c "SELECT 'INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES (''' || replace(nome, '''', '''''') || ''', ''' || replace(descrizione, '''', '''''') || ''', ' || prezzo || ', ''/uploads/' || substring(immagine_url from '[^/]+$') || ''');' FROM prodotto;")
+
+*/
 INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES ('Il Signore degli Anelli', 'Un classico della letteratura fantasy', 25.50, '/uploads/il_signore_degli_anelli.jpg');
 INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES ('Set di Cacciaviti', 'Set professionale 10 pezzi', 42.00, '/uploads/set_di_cacciaviti.jpg');
 INSERT INTO prodotto (nome, descrizione, prezzo, immagine_url) VALUES ('Star Wars', 'Tanto tempo fa in una galassia lontana lontana ...', 24.50, '/uploads/star_wars.jpg');
